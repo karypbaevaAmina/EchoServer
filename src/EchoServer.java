@@ -33,21 +33,18 @@ public class EchoServer {
     private void handle(Socket socket) throws IOException {
         // логика обработки
         InputStream input = socket.getInputStream();
-//        InputStreamReader isr = new InputStreamReader(input, "UTF-8");
-        Scanner scanner = new Scanner(System.in, "UTF-8");
+        InputStreamReader isr = new InputStreamReader(input, "UTF-8");
+        Scanner sc = new Scanner(isr);
+        PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
-
-        try (PrintWriter writer = new PrintWriter(socket.getOutputStream());
-             InputStreamReader isr = new InputStreamReader(socket.getInputStream()))
-        {
+        try (sc) {
             while (true) {
-                     Scanner sc = new Scanner(isr);
-                     String message1 = scanner.nextLine().strip();
-                writer.write(message1);
-                writer.write(System.lineSeparator());
-                writer.flush();
                 String message = sc.nextLine().strip();
                 System.out.println(reverse(message));
+                writer.write(message);
+                writer.write(System.lineSeparator());
+                writer.flush();
+
                 if ("bye".equalsIgnoreCase(message)) {
                     System.out.printf("Bye bye!%n");
                     return;
